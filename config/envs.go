@@ -14,6 +14,7 @@ type Envs struct {
 	PostgresPassword string
 	PostgresDB       string
 	PostgresURL      string
+	JwtSecret        string
 }
 
 func LoadEnvVariables() Envs {
@@ -33,5 +34,6 @@ func LoadEnvVariables() Envs {
 		PostgresPassword: os.Getenv("POSTGRES_PASSWORD"),
 		PostgresDB:       os.Getenv("POSTGRES_DB"),
 		PostgresURL:      os.Getenv("POSTGRES_URL"),
+		JwtSecret:        os.Getenv("JWT_SECRET"),
 	}
 }
