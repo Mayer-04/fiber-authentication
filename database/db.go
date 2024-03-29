@@ -10,17 +10,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type Dbinstance struct {
-	Db *gorm.DB
-}
-
-var DB Dbinstance
+var DB *gorm.DB
 
 func ConnectDatabase() {
+
+	var err error
+
 	config := config.LoadEnvVariables()
 	dbURL := config.PostgresURL
 
-	database, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
@@ -28,12 +27,12 @@ func ConnectDatabase() {
 
 	fmt.Println("Connected to database")
 
-	err = database.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{})
 
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 
-	DB = Dbinstance{Db: database}
+	DB = db
 
 }

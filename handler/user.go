@@ -7,28 +7,35 @@ import (
 )
 
 func Register(c *fiber.Ctx) error {
-	var formData models.Register
-	db := database.DB.Db
+	var data models.Register
+	db := database.DB
 
-	if err := c.BodyParser(&formData); err != nil {
+	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "message": "Invalid request"})
 	}
 
-	if err := ValidateRegisterData(&formData); err != nil {
+	if err := ValidateRegisterData(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "message": err.Error()})
 	}
 
+	hash, err := HashPassword(data.Password)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "message": "Failed to hash password"})
+	}
+
 	newUser := models.User{
-		Name:     formData.Name,
-		Email:    formData.Email,
-		Password: formData.Password,
+		Name:     data.Name,
+		UserName: data.UserName,
+		Email:    data.Email,
+		Password: hash,
 	}
 
 	if err := db.Create(&newUser).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "message": "Failed to create user"})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "data": &newUser})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "data": newUser})
 }
 
 func Login(c *fiber.Ctx) error {
