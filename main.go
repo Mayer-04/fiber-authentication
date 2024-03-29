@@ -2,25 +2,32 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/Mayer-04/fiber-authentication/config"
-	"github.com/Mayer-04/fiber-authentication/pkg/database"
+	"github.com/Mayer-04/fiber-authentication/database"
+	"github.com/Mayer-04/fiber-authentication/router"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-	app := fiber.New()
 
-	port := config.LoadEnvVariables().Port
-
+	// Conexión a la base de datos
 	database.ConnectDatabase()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	port := config.LoadEnvVariables().Port
+	// Configuración de Fiber
+	app := fiber.New()
 
-	addr := fmt.Sprintf(":%d", port)
+	// Configuración de CORS
+	app.Use(cors.New(config.GetCorsConfig()))
 
-	app.Listen(addr)
+	// Configuración de rutas
+	router.SetupRoutes(app)
+
+	address := fmt.Sprintf(":%d", port)
+
+	log.Fatal(app.Listen(address))
 
 }
