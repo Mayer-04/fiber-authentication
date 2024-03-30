@@ -36,6 +36,7 @@ func Register(c *fiber.Ctx) error {
 		Password: hash,
 	}
 
+	// Si hay un error al crear el usuario como conflicto de clave única "email" retornar un error
 	if err := db.Create(&newUser).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "message": "Failed to create user"})
 	}
@@ -81,5 +82,5 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Retornar éxito y token JWT
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "token": token})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "Success login", "token": token})
 }

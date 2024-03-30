@@ -19,20 +19,18 @@ func ConnectDatabase() {
 	config := config.LoadEnvVariables()
 	dbURL := config.PostgresURL
 
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	fmt.Println("Connected to database")
+	fmt.Println("connected to database")
 
-	err = db.AutoMigrate(&models.User{})
+	err = DB.AutoMigrate(&models.User{})
 
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
-
-	DB = db
 
 }

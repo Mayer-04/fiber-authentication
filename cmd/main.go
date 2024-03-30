@@ -18,7 +18,10 @@ func main() {
 
 	port := config.LoadEnvVariables().Port
 	// Configuración de Fiber
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		CaseSensitive: true,
+		StrictRouting: true,
+	})
 
 	// Configuración de CORS
 	app.Use(cors.New(config.GetCorsConfig()))
