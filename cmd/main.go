@@ -6,7 +6,8 @@ import (
 
 	"github.com/Mayer-04/fiber-authentication/config"
 	"github.com/Mayer-04/fiber-authentication/database"
-	"github.com/Mayer-04/fiber-authentication/router"
+	"github.com/Mayer-04/fiber-authentication/middlewares"
+	"github.com/Mayer-04/fiber-authentication/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -24,10 +25,10 @@ func main() {
 	})
 
 	// Configuración de CORS
-	app.Use(cors.New(config.GetCorsConfig()))
+	app.Use(cors.New(middlewares.GetCorsConfig()))
 
 	// Configuración de rutas
-	router.SetupRoutes(app)
+	routes.SetupRoutes(app)
 
 	address := fmt.Sprintf(":%d", port)
 

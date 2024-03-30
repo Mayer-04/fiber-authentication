@@ -9,8 +9,9 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-// Si el error es nil, las contraseñas son iguales, retorna true
-// Si retorna un error, las contraseñas no son iguales
+// ComparePasswordAndHash retorna un booleano.
+// Si el error es nil, las contraseñas son iguales, retorna true.
+// Si retorna un error, las contraseñas no son iguales, retorna false
 func ComparePasswordAndHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil

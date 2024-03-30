@@ -18,8 +18,8 @@ type Envs struct {
 	JwtSecret        string
 }
 
-// Constantes para las variables de entorno
-const (
+// Variables para las diferentes variables de entorno
+var (
 	env              = ".env"
 	Port             = "PORT"
 	PostgresUser     = "POSTGRES_USER"

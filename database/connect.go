@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Variable global que instancia la base de datos
 var DB *gorm.DB
 
 func ConnectDatabase() {
