@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Mayer-04/fiber-authentication/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = LoadEnvVariables().JwtSecret
+var secretKey = []byte(LoadEnvVariables().JwtSecret) // Convertir a []byte
 
-func GenerateToken(username string) (string, error) {
+func GenerateToken(user models.User) (string, error) {
 	claims := jwt.MapClaims{
-		"username": username,
+		"id":       user.ID,
+		"name":     user.Name,
+		"username": user.UserName,
 		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	}
 
@@ -31,7 +34,7 @@ func VerifyToken(tokenString string) error {
 	})
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse token: %v", err)
 	}
 
 	if !token.Valid {
