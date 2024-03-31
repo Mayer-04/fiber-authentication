@@ -8,10 +8,11 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
 - **Inicio de sesión:** Permite a los usuarios iniciar sesión con sus credenciales previamente registradas.
 - **Hash de contraseñas:** Las contraseñas se almacenan en la base de datos utilizando técnicas de hash para mayor seguridad.
 - **JWT (JSON Web Tokens):** Se emiten tokens JWT una vez que los usuarios inician sesión para autenticar y autorizar las solicitudes posteriores.
+- Gestión de sesiones mediante **cookies** para mantener la autenticación del usuario.
 
 ## Requisitos previos
 
-- Go 1.16 o superior
+- Go 1.21 o superior
 - Docker para ejecutar los servicios deseados, base de datos PostgreSQL
 - **Paquetes Go:** Fiber, GORM, validator
 
