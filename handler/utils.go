@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mayer-04/fiber-authentication/config"
 	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -51,6 +52,7 @@ func GenerateToken(user models.User) (string, error) {
 }
 
 func VerifyToken(tokenString string) error {
+	// jwt.Parse analiza y verifica la validez de un token JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
@@ -59,8 +61,9 @@ func VerifyToken(tokenString string) error {
 		return fmt.Errorf("failed to parse token: %v", err)
 	}
 
+	// Valid especifica si el token es válido. Se completa cuando se analiza/verifica el token "jwt.Parse"
 	if !token.Valid {
-		return fmt.Errorf("invalid token")
+		return fmt.Errorf("invalid token: %w", err)
 	}
 
 	return nil
@@ -83,3 +86,19 @@ func VerifyToken(tokenString string) error {
 
 // 	return tokenString, nil
 // }
+
+// * Creación de la cookie
+
+// CreateCookie Crea una nueva cookie que recibe como valor el token y otras configuraciones
+func CreateCookie(token string) *fiber.Cookie {
+	return &fiber.Cookie{
+		Name:     "Authorization",
+		Value:    token,
+		Secure:   true, // Solo para HTTPS
+		HTTPOnly: true, // Solo puede ser accedida o leída por peticiones HTTP
+		// SameSite controlar si la cookie puede ser compartida entre dominios "CORS"
+		SameSite: fiber.CookieSameSiteNoneMode,  // Controla si la cookie puede ser compartida entre dominios "CORS"
+		Expires:  time.Now().Add(3 * time.Hour), // Tiempo de expiración de la cookie - 3 horas
+	}
+
+}

@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"log"
-	"time"
 
 	"github.com/Mayer-04/fiber-authentication/database"
 	"github.com/Mayer-04/fiber-authentication/models"
@@ -26,6 +25,8 @@ func Register(c *fiber.Ctx) error {
 	hash, err := HashPassword(data.Password)
 
 	if err != nil {
+		// Registrar el error
+		log.Printf("failed has password %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Failed to hash password"})
 	}
 
@@ -58,8 +59,17 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user models.User
-	// Buscar usuario por correo electrónico
-	if err := db.Where("email = ?", data.Email).First(&user).Error; err != nil {
+
+	// Filtro para buscar el "primer" usuario que coincida con el correo electronico
+	queryFilter := db.Where("email = ?", data.Email).First(&user)
+
+	// Si tenemos un error al buscar el usuario por email
+	if err := queryFilter.Error; err != nil {
+
+		// Registrar el error
+		log.Printf("queryFilter: %v", err)
+
+		// Si el error es igual al error de registro no encontrado en GORM
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"success": false, "message": "User not found"})
 		}
@@ -80,18 +90,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to generate token"})
 	}
 
-	// Creando una cookie
-	cookie := &fiber.Cookie{
-		Name:  "Authorization",
-		Value: token,
-		// Secure solo para HTTPS
-		Secure: true,
-		// HttpOnly solo puede ser accedida o leída por peticiones HTTP
-		HTTPOnly: true,
-		// SameSite controlar si la cookie puede ser compartida entre dominios "CORS"
-		SameSite: fiber.CookieSameSiteNoneMode,
-		Expires:  time.Now().Add(24 * time.Hour),
-	}
+	cookie := CreateCookie(token)
 
 	// Agregar la cookie a la respuesta
 	c.Cookie(cookie)
