@@ -26,7 +26,7 @@ func Register(c *fiber.Ctx) error {
 
 	if err != nil {
 		// Registrar el error
-		log.Printf("failed has password %v", err)
+		log.Printf("failed hash password %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Failed to hash password"})
 	}
 

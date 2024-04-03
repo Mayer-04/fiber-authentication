@@ -18,6 +18,7 @@ func main() {
 	database.ConnectDatabase()
 
 	port := config.LoadEnvVariables().Port
+
 	// Configuración de Fiber
 	app := fiber.New(fiber.Config{
 		CaseSensitive: true,

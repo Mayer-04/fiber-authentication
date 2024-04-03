@@ -12,8 +12,11 @@ import (
 )
 
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", fmt.Errorf("hash password: %w", err)
+	}
+	return string(hashedBytes), nil
 }
 
 // ComparePasswordAndHash retorna un booleano.
@@ -45,7 +48,7 @@ func GenerateToken(user models.User) (string, error) {
 	// Genera y firma el token - La firma espera un []byte para la clave secreta y devuelve un string
 	jwtString, err := token.SignedString(secretKey)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", fmt.Errorf("generate token: %w", err)
 	}
 
 	return jwtString, nil
@@ -58,7 +61,7 @@ func VerifyToken(tokenString string) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("failed to parse token: %v", err)
+		return fmt.Errorf("parse token: %w", err)
 	}
 
 	// Valid especifica si el token es válido. Se completa cuando se analiza/verifica el token "jwt.Parse"
@@ -94,9 +97,8 @@ func CreateCookie(token string) *fiber.Cookie {
 	return &fiber.Cookie{
 		Name:     "Authorization",
 		Value:    token,
-		Secure:   true, // Solo para HTTPS
-		HTTPOnly: true, // Solo puede ser accedida o leída por peticiones HTTP
-		// SameSite controlar si la cookie puede ser compartida entre dominios "CORS"
+		Secure:   true,                          // Solo para HTTPS
+		HTTPOnly: true,                          // Solo puede ser accedida o leída por peticiones HTTP
 		SameSite: fiber.CookieSameSiteNoneMode,  // Controla si la cookie puede ser compartida entre dominios "CORS"
 		Expires:  time.Now().Add(3 * time.Hour), // Tiempo de expiración de la cookie - 3 horas
 	}
