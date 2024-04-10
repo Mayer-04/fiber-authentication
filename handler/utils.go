@@ -102,5 +102,4 @@ func CreateCookie(token string) *fiber.Cookie {
 		SameSite: fiber.CookieSameSiteNoneMode,  // Controla si la cookie puede ser compartida entre dominios "CORS"
 		Expires:  time.Now().Add(3 * time.Hour), // Tiempo de expiración de la cookie - 3 horas
 	}
-
 }
