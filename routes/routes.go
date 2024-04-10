@@ -12,7 +12,7 @@ func SetupRoutes(app *fiber.App) {
 
 	auth.Post("/register", handler.Register)
 	auth.Post("/login", handler.Login)
-	auth.Get("/user", middlewares.VerifyToken, func(c *fiber.Ctx) error {
-		return c.SendString("Ruta privada")
-	})
+
+	// Obtener usuarios: http://localhost:5000/api/users
+	api.Get("/users", middlewares.VerifyToken, handler.FindAllUsers)
 }
