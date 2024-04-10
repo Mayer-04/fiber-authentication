@@ -12,6 +12,7 @@ import (
 // Variable global que instancia la base de datos
 var DB *gorm.DB
 
+// ConnectDatabase establece la conexión con la base de datos y realiza la migración inicial
 func ConnectDatabase() {
 
 	config := config.LoadEnvVariables()
@@ -24,12 +25,10 @@ func ConnectDatabase() {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	log.Println("connected to database")
-
-	err = DB.AutoMigrate(&models.User{})
-
-	if err != nil {
+	// Realiza la migración inicial
+	if err := DB.AutoMigrate(&models.User{}); err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 
+	log.Println("connected to database")
 }
