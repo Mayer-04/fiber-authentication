@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strconv"
@@ -18,9 +19,8 @@ type Envs struct {
 	JwtSecret        string
 }
 
-// Variables para las diferentes variables de entorno
-var (
-	env              = ".env"
+// Constantes para las diferentes variables de entorno
+const (
 	Port             = "PORT"
 	PostgresUser     = "POSTGRES_USER"
 	PostgresPassword = "POSTGRES_PASSWORD"
@@ -30,14 +30,16 @@ var (
 )
 
 func LoadEnvVariables() Envs {
-	err := godotenv.Load(env)
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("failed to load environment variables: %v", err)
 	}
-	// Parsear el puerto - 10 es el número maximo de digitos, 32 es el número maximo de bytes
-	port, err := strconv.ParseUint(os.Getenv(Port), 10, 32)
+
+	portStr := os.Getenv(Port)
+	port, err := parsePort(portStr)
+
 	if err != nil {
-		log.Fatal("failed to parse PORT environment variable")
+		log.Fatal(err)
 	}
 
 	return Envs{
@@ -48,4 +50,20 @@ func LoadEnvVariables() Envs {
 		PostgresURL:      os.Getenv(PostgresURL),
 		JwtSecret:        os.Getenv(JwtSecret),
 	}
+}
+
+func parsePort(portStr string) (uint64, error) {
+
+	if portStr == "" {
+		return 8080, nil
+	}
+
+	// Parsear el puerto - 10 es el número maximo de digitos, 32 es el número maximo de bytes
+	port, err := strconv.ParseUint(portStr, 10, 32)
+
+	if err != nil {
+		return 0, errors.New("failed to parse PORT environment variable")
+	}
+
+	return port, nil
 }

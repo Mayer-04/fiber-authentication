@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/Mayer-04/fiber-authentication/config"
@@ -15,18 +14,17 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 
-	var err error
-
 	config := config.LoadEnvVariables()
 	dbURL := config.PostgresURL
 
+	var err error
 	DB, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	fmt.Println("connected to database")
+	log.Println("connected to database")
 
 	err = DB.AutoMigrate(&models.User{})
 

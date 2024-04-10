@@ -78,7 +78,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Comparar contraseña ingresada con la contraseña almacenada en la base de datos
-	if !ComparePasswordAndHash(data.Password, user.Password) {
+	if !CheckPasswordHash(data.Password, user.Password) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid credentials"})
 	}
 
