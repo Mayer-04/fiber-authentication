@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func HashPassword(password string) (string, error) {
+func hashPassword(password string) (string, error) {
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", fmt.Errorf("hash password: %w", err)
@@ -22,7 +22,7 @@ func HashPassword(password string) (string, error) {
 // CheckPasswordHash retorna un booleano.
 // Si el error es nil, las contraseñas son iguales, retorna true.
 // Si retorna un error, las contraseñas no son iguales, retorna false
-func CheckPasswordHash(password, hash string) bool {
+func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
@@ -32,7 +32,7 @@ func CheckPasswordHash(password, hash string) bool {
 // Convertir la variable de entorno "JWT_SECRET" a []byte
 var secretKey = []byte(config.LoadEnvVariables().JwtSecret)
 
-func GenerateToken(user models.User) (string, error) {
+func generateToken(user models.User) (string, error) {
 	// Información que contiene datos sobre el usuario o entidad asociada con el token
 	// Información que compartiremos con el cliente
 	claims := jwt.MapClaims{
@@ -93,7 +93,7 @@ func VerifyToken(tokenString string) error {
 // * Creación de la cookie
 
 // CreateCookie Crea una nueva cookie que recibe como valor el token y otras configuraciones
-func CreateCookie(token string) *fiber.Cookie {
+func createCookie(token string) *fiber.Cookie {
 	return &fiber.Cookie{
 		Name:     "Authorization",
 		Value:    token,

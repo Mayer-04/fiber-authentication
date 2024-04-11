@@ -10,7 +10,7 @@ import (
 var validate = validator.New()
 
 // ValidateRegisterData valida los datos del registro
-func ValidateRegisterData(data *models.Register) error {
+func validateRegisterData(data *models.Register) error {
 	if err := validate.Struct(data); err != nil {
 		return fmt.Errorf("validate register: %w", err)
 	}
@@ -18,7 +18,7 @@ func ValidateRegisterData(data *models.Register) error {
 }
 
 // ValidateLoginData valida los datos del inicio de sesión "login"
-func ValidateLoginData(data *models.Login) error {
+func validateLoginData(data *models.Login) error {
 	if err := validate.Struct(data); err != nil {
 		return fmt.Errorf("validate login: %w", err)
 	}

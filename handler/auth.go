@@ -18,11 +18,11 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "message": "Error parsing request body to a struct"})
 	}
 
-	if err := ValidateRegisterData(&data); err != nil {
+	if err := validateRegisterData(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	hash, err := HashPassword(data.Password)
+	hash, err := hashPassword(data.Password)
 
 	if err != nil {
 		// Registrar el error
@@ -54,7 +54,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Validar datos de inicio de sesión
-	if err := ValidateLoginData(&data); err != nil {
+	if err := validateLoginData(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
 
@@ -78,19 +78,19 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Comparar contraseña ingresada con la contraseña almacenada en la base de datos
-	if !CheckPasswordHash(data.Password, user.Password) {
+	if !checkPasswordHash(data.Password, user.Password) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid credentials"})
 	}
 
 	// Generar token JWT
-	token, err := GenerateToken(user)
+	token, err := generateToken(user)
 	if err != nil {
 		// Registrar el error
 		log.Printf("failed to generate token: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to generate token"})
 	}
 
-	cookie := CreateCookie(token)
+	cookie := createCookie(token)
 
 	// Agregar la cookie a la respuesta
 	c.Cookie(cookie)
