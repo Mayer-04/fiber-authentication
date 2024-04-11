@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-// Métodos HTTP que acepta la configuración de cors
+// Métodos HTTP que acepta la configuración de cors - GET Y POST
 var methods = strings.Join([]string{
 	fiber.MethodGet,
 	fiber.MethodPost,
