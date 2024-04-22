@@ -11,6 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// hashPassword toma una contraseña y devuelve su hash bcrypt.
 func hashPassword(password string) (string, error) {
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -21,15 +22,13 @@ func hashPassword(password string) (string, error) {
 
 // CheckPasswordHash retorna un booleano.
 // Si el error es nil, las contraseñas son iguales, retorna true.
-// Si retorna un error, las contraseñas no son iguales, retorna false
+// Si retorna un error, las contraseñas no son iguales, retorna false.
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
 
-// * Funciones JWT
-
-// Convertir la variable de entorno "JWT_SECRET" a []byte
+// secretKey contiene la clave secreta para firmar y verificar tokens JWT.
 var secretKey = []byte(config.LoadEnvVariables().JwtSecret)
 
 func generateToken(user models.User) (string, error) {
@@ -38,7 +37,7 @@ func generateToken(user models.User) (string, error) {
 	claims := jwt.MapClaims{
 		"id":   user.ID,
 		"name": user.Name,
-		// Establece la expiración en 24 horas
+		// Establece la expiración del token en 24 horas desde ahora.
 		"exp": time.Now().Add(24 * time.Hour).Unix(),
 	}
 
@@ -54,6 +53,7 @@ func generateToken(user models.User) (string, error) {
 	return jwtString, nil
 }
 
+// VerifyToken verifica la validez de un token JWT dado.
 func VerifyToken(tokenString string) error {
 	// jwt.Parse analiza y verifica la validez de un token JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -72,34 +72,34 @@ func VerifyToken(tokenString string) error {
 	return nil
 }
 
-// func GenerateToken(user models.User) (string, error) {
-// 	token := jwt.New(jwt.SigningMethodHS256)
+/*
+func GenerateToken(user models.User) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
 
-// 	claims := token.Claims.(jwt.MapClaims)
-// 	claims["id"] = user.ID
-// 	claims["name"] = user.Name
-// 	claims["username"] = user.UserName
-// 	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
+	claims := token.Claims.(jwt.MapClaims)
+	claims["id"] = user.ID
+	claims["name"] = user.Name
+	claims["username"] = user.UserName
+	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 
-// 	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := token.SignedString(secretKey)
 
-// 	if err != nil {
-// 		return "", fmt.Errorf("failed to generate token: %v", err)
-// 	}
+	if err != nil {
+		return "", fmt.Errorf("failed to generate token: %v", err)
+	}
 
-// 	return tokenString, nil
-// }
+	return tokenString, nil
+}
+*/
 
-// * Creación de la cookie
-
-// CreateCookie Crea una nueva cookie que recibe como valor el token y otras configuraciones
+// createCookie crea una nueva cookie que contiene el token JWT.
 func createCookie(token string) *fiber.Cookie {
 	return &fiber.Cookie{
 		Name:     "Authorization",
 		Value:    token,
 		Secure:   true,                          // Solo para HTTPS
-		HTTPOnly: true,                          // Solo puede ser accedida o leída por peticiones HTTP
-		SameSite: fiber.CookieSameSiteNoneMode,  // Controla si la cookie puede ser compartida entre dominios "CORS"
-		Expires:  time.Now().Add(3 * time.Hour), // Tiempo de expiración de la cookie - 3 horas
+		HTTPOnly: true,                          // Solo accesible por peticiones HTTP
+		SameSite: fiber.CookieSameSiteNoneMode,  // Controla la política de CORS
+		Expires:  time.Now().Add(3 * time.Hour), // Expira en 3 horas
 	}
 }
