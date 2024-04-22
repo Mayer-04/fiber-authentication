@@ -7,12 +7,10 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	api := app.Group("/api")
+	api := app.Group("/v1")
 	auth := api.Group("/auth")
 
 	auth.Post("/register", handler.Register)
 	auth.Post("/login", handler.Login)
-
-	// Obtener usuarios: http://localhost:5000/api/users
 	api.Get("/users", middlewares.VerifyToken, handler.FindAllUsers)
 }
