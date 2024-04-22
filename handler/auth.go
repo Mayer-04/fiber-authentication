@@ -15,7 +15,10 @@ func Register(c *fiber.Ctx) error {
 	db := database.DB
 
 	if err := c.BodyParser(&data); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "message": "Error parsing request body to a struct"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Error parsing request body to a struct",
+		})
 	}
 
 	if err := validateRegisterData(&data); err != nil {
@@ -25,7 +28,7 @@ func Register(c *fiber.Ctx) error {
 	hash, err := hashPassword(data.Password)
 
 	if err != nil {
-		// Registrar el error
+		// Registrar si hay un error
 		log.Printf("failed hash password %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Failed to hash password"})
 	}
@@ -38,7 +41,10 @@ func Register(c *fiber.Ctx) error {
 
 	// Si hay un error al crear el usuario como conflicto de clave única "email" retornar un error
 	if err := db.Create(&newUser).Error; err != nil {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"success": false, "message": "Failed to create user"})
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to create user",
+		})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "data": newUser})
@@ -50,7 +56,10 @@ func Login(c *fiber.Ctx) error {
 
 	// Parsear el cuerpo de la solicitud
 	if err := c.BodyParser(&data); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "message": "Error parsing request body to a struct"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Error parsing request body to a struct",
+		})
 	}
 
 	// Validar datos de inicio de sesión
@@ -71,10 +80,16 @@ func Login(c *fiber.Ctx) error {
 
 		// Si el error es igual al error de registro no encontrado en GORM
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"success": false, "message": "User not found"})
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"success": false,
+				"message": "User not found",
+			})
 		}
 		// Manejar otros errores de la base de datos
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Database error"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Database error",
+			"error":   err.Error(),
+		})
 	}
 
 	// Comparar contraseña ingresada con la contraseña almacenada en la base de datos
@@ -85,7 +100,7 @@ func Login(c *fiber.Ctx) error {
 	// Generar token JWT
 	token, err := generateToken(user)
 	if err != nil {
-		// Registrar el error
+		// Registrar si hay un error
 		log.Printf("failed to generate token: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to generate token"})
 	}
@@ -96,5 +111,8 @@ func Login(c *fiber.Ctx) error {
 	c.Cookie(cookie)
 
 	// Retornar éxito y token JWT
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "token": token})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"token":   token,
+	})
 }
