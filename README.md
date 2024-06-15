@@ -9,6 +9,7 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
 - **Hash de contraseñas:** Las contraseñas se almacenan en la base de datos utilizando técnicas de hash para mayor seguridad.
 - **JWT (JSON Web Tokens):** Se emiten tokens JWT una vez que los usuarios inician sesión para autenticar y autorizar las solicitudes posteriores.
 - Gestión de sesiones mediante **cookies** para mantener la autenticación del usuario.
+- **Cerrar sesión:** Permite a los usuarios eliminar el token JWT almacenado en las cookies y cerrar su sesión mediante la ruta `/logout`.
 
 ## Requisitos previos
 
@@ -30,7 +31,7 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
    go mod tidy
    ```
 
-3. Clonar el archivo **.env.example** a **.env** para configurar las variables de entorno. Credenciales de la base de datos y clave secreta JWT
+3. Clonar el archivo **.env.example** a **.env** para configurar las variables de entorno. Credenciales de la base de datos y clave secreta JWT.
 4. Configurar el **docker-compose.yml** y ejecutar:
 
    ```bash
@@ -40,7 +41,9 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
 5. Ejecutar la aplicación:
 
    ```bash
-   go run cmd/main.go
+   go run cmd/api/main.go
    ```
 
-6. Accede a la API desde: `http://localhost:8080/api/auth/[register|login]`
+6. Accede a la API desde: `http://localhost:8080/v1/auth/[register|login]`
+7. Para cerrar sesión utilizar la ruta: `http://localhost:8080/v1/auth/logout`
+8. Para recuperar la lista de usuarios registrados (necesita estar autenticado): `http://localhost:8080/v1/users`
