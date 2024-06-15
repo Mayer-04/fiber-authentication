@@ -76,7 +76,7 @@ func Login(c *fiber.Ctx) error {
 	if err := queryFilter.Error; err != nil {
 
 		// Registrar el error
-		log.Printf("queryFilter: %v", err)
+		log.Printf("queryFilter: %v", err) // Output: queryFilter: record not found
 
 		// Si el error es igual al error de registro no encontrado en GORM
 		if errors.Is(err, gorm.ErrRecordNotFound) {

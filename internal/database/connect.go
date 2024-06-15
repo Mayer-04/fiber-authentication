@@ -3,7 +3,6 @@ package database
 import (
 	"log"
 
-	"github.com/Mayer-04/fiber-authentication/config"
 	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -13,10 +12,7 @@ import (
 var DB *gorm.DB
 
 // ConnectDatabase establece la conexión con la base de datos y realiza la migración inicial
-func ConnectDatabase() {
-
-	config := config.LoadEnvVariables()
-	dbURL := config.PostgresURL
+func ConnectDatabase(dbURL string) {
 
 	var err error
 	DB, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})

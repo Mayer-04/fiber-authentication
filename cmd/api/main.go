@@ -11,10 +11,11 @@ import (
 
 func main() {
 
-	// Conexión a la base de datos
-	database.ConnectDatabase()
+	// Carga de variables de entorno
+	env := config.LoadEnvVariables()
 
-	port := config.LoadEnvVariables().Port
+	// Conexión a la base de datos
+	database.ConnectDatabase(env.PostgresURL)
 
 	// Configuración de Fiber
 	app := server.New()
@@ -22,7 +23,7 @@ func main() {
 	// Configuración de rutas
 	app.SetupRoutes()
 
-	address := fmt.Sprintf(":%d", port)
+	address := fmt.Sprintf(":%d", env.Port)
 
 	log.Fatal(app.Listen(address))
 
