@@ -1,6 +1,6 @@
-# fiber-authentication
+# Fiber-authentication 🔒
 
-API REST para manejar la autenticación de usuarios, implementando funcionalidades de registro (signup) y inicio de sesión (login) utilizando el framework Fiber para gestionar las solicitudes HTTP. La base de datos PostgreSQL se integra mediante GORM, y el paquete validator se utiliza para validar los datos de entrada.
+API REST para manejar la autenticación de usuarios, implementando funcionalidades de registro (signup) y inicio de sesión (login) utilizando el framework Fiber para gestionar las solicitudes HTTP. La base de datos PostgreSQL se integra mediante el ORM **GORM**, y el **paquete validator** se utiliza para validar los datos de entrada.
 
 ## Características principales
 
@@ -26,7 +26,7 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
 
 2. Instalar las dependencias:
 
-    ```bash
+   ```bash
    go mod tidy
    ```
 
@@ -39,8 +39,8 @@ API REST para manejar la autenticación de usuarios, implementando funcionalidad
 
 5. Ejecutar la aplicación:
 
-    ```bash
+   ```bash
    go run cmd/main.go
    ```
 
-6. Accede a la API desde: `http://localhost:5000/api/auth/[register|login]`
+6. Accede a la API desde: `http://localhost:8080/api/auth/[register|login]`
