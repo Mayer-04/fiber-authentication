@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/Mayer-04/fiber-authentication/config"
-	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

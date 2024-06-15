@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -62,7 +62,7 @@ func parsePort(portStr string) (uint64, error) {
 	port, err := strconv.ParseUint(portStr, 10, 32)
 
 	if err != nil {
-		return 0, errors.New("failed to parse PORT environment variable")
+		return 0, fmt.Errorf("failed to parse PORT environment variable: %w", err)
 	}
 
 	return port, nil

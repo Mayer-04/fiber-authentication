@@ -1,11 +1,11 @@
-package handler
+package handlers
 
 import (
 	"errors"
 	"log"
 
-	"github.com/Mayer-04/fiber-authentication/database"
-	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/Mayer-04/fiber-authentication/internal/database"
+	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func Register(c *fiber.Ctx) error {
 
 	if err != nil {
 		// Registrar si hay un error
-		log.Printf("failed hash password %v", err)
+		log.Printf("failed hash password: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Failed to hash password"})
 	}
 
@@ -110,9 +110,27 @@ func Login(c *fiber.Ctx) error {
 	// Agregar la cookie a la respuesta
 	c.Cookie(cookie)
 
-	// Retornar éxito y token JWT
+	// Retornar éxito y un mensaje de que el inicio de sesión fue exitoso
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"token":   token,
+		"message": "Successful login",
+	})
+}
+
+// Logout elimina el token JWT de la cookie de autorización y retorna un éxito en la respuesta.
+func Logout(c *fiber.Ctx) error {
+
+	// Crear una cookie con el mismo nombre pero con una fecha de expiración en el pasado
+	cookie := deleteCookie()
+
+	// Agregar la cookie a la respuesta
+	// Se envia en la respuesta para asegurar que el navegador elimine la cookie de autorización del usuario
+	c.Cookie(cookie)
+
+	// c.ClearCookie("Authorization")
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Logged out successfully",
 	})
 }

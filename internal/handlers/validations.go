@@ -1,9 +1,9 @@
-package handler
+package handlers
 
 import (
 	"fmt"
 
-	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -22,6 +22,5 @@ func validateLoginData(data *models.Login) error {
 	if err := validate.Struct(data); err != nil {
 		return fmt.Errorf("validate login: %w", err)
 	}
-
 	return nil
 }

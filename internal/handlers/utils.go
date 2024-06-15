@@ -1,17 +1,20 @@
-package handler
+package handlers
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/Mayer-04/fiber-authentication/config"
-	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// hashPassword toma una contraseña y devuelve su hash bcrypt.
+// CookieName es el nombre de la cookie que contiene el token JWT.
+const CookieName = "Authorization"
+
+// hashPassword toma una contraseña y devuelve una nueva contraseña hasheada con bcrypt.
 func hashPassword(password string) (string, error) {
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -21,7 +24,9 @@ func hashPassword(password string) (string, error) {
 }
 
 // CheckPasswordHash retorna un booleano.
+//
 // Si el error es nil, las contraseñas son iguales, retorna true.
+//
 // Si retorna un error, las contraseñas no son iguales, retorna false.
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
@@ -37,7 +42,7 @@ func generateToken(user models.User) (string, error) {
 	claims := jwt.MapClaims{
 		"id":   user.ID,
 		"name": user.Name,
-		// Establece la expiración del token en 24 horas desde ahora.
+		// Establece la expiración del token en 24 horas desde ahora
 		"exp": time.Now().Add(24 * time.Hour).Unix(),
 	}
 
@@ -85,7 +90,7 @@ func GenerateToken(user models.User) (string, error) {
 	tokenString, err := token.SignedString(secretKey)
 
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %v", err)
+		return "", fmt.Errorf("failed to generate token: %w", err)
 	}
 
 	return tokenString, nil
@@ -95,11 +100,33 @@ func GenerateToken(user models.User) (string, error) {
 // createCookie crea una nueva cookie que contiene el token JWT.
 func createCookie(token string) *fiber.Cookie {
 	return &fiber.Cookie{
-		Name:     "Authorization",
+		Name:     CookieName,
 		Value:    token,
 		Secure:   true,                          // Solo para HTTPS
 		HTTPOnly: true,                          // Solo accesible por peticiones HTTP
 		SameSite: fiber.CookieSameSiteNoneMode,  // Controla la política de CORS
 		Expires:  time.Now().Add(3 * time.Hour), // Expira en 3 horas
 	}
+}
+
+// deleteCookie elimina la cookie de autorización.
+//
+// Devuelve un nuevo objeto *fiber.Cookie con el mismo nombre pero con una fecha de expiración en el pasado.
+func deleteCookie() *fiber.Cookie {
+	// Crear una cookie con el mismo nombre pero con una fecha de expiración en el pasado
+	expiredCookie := new(fiber.Cookie)
+
+	// Nombre de la cookie
+	expiredCookie.Name = CookieName
+
+	// Valor de la cookie se establece en una cadena vacía
+	expiredCookie.Value = ""
+
+	// Solo accesible por peticiones HTTP
+	expiredCookie.HTTPOnly = true
+
+	// Fecha de expiración en el pasado
+	expiredCookie.Expires = time.Now().Add(-24 * time.Hour)
+
+	return expiredCookie
 }

@@ -1,8 +1,8 @@
-package handler
+package handlers
 
 import (
-	"github.com/Mayer-04/fiber-authentication/database"
-	"github.com/Mayer-04/fiber-authentication/models"
+	"github.com/Mayer-04/fiber-authentication/internal/database"
+	"github.com/Mayer-04/fiber-authentication/internal/models"
 	"github.com/gofiber/fiber/v2"
 )
 
