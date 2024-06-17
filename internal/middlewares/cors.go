@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-// corsOrigins es un slice que contiene los origenes aceptados por la configuración de CORS
+// corsOrigins contiene los origenes aceptados por la configuración de CORS
 var corsOrigins = []string{
 	"http://localhost:5173",
 	"http://localhost:3000",
@@ -18,7 +18,7 @@ var corsOrigins = []string{
 // origins es una cadena que contiene la lista de origenes aceptados separados por comas
 var origins = strings.Join(corsOrigins, ",")
 
-// fiberMethods es un slice que contiene los métodos HTTP aceptados por la configuración de CORS
+// fiberMethods contiene los métodos HTTP aceptados por la configuración de CORS
 var fiberMethods = []string{
 	fiber.MethodGet,
 	fiber.MethodPost,
@@ -28,7 +28,7 @@ var fiberMethods = []string{
 var methods = strings.Join(fiberMethods, ",")
 
 // GetCorsConfig retorna la configuración de CORS predeterminada para la aplicación
-func GetCorsConfig() cors.Config {
+func GetCORSConfig() cors.Config {
 	return cors.Config{
 		// AllowOrigins define los orígenes permitidos para las solicitudes CORS
 		AllowOrigins: origins,
