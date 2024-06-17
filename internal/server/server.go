@@ -4,6 +4,8 @@ import (
 	"github.com/Mayer-04/fiber-authentication/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 type FiberServer struct {
@@ -19,13 +21,20 @@ func New() *FiberServer {
 	}
 
 	// Instancia del servidor
-	server := &FiberServer{
+	app := &FiberServer{
 		App: fiber.New(config),
 	}
 
-	// Configuración de CORS
-	server.Use(cors.New(middlewares.GetCorsConfig()))
+	// Configuración de Middlewares
+	setupMiddlewares(app)
 
-	return server
+	return app
 
+}
+
+// SetupMiddlewares configura los Middlewares para la aplicación
+func setupMiddlewares(app *FiberServer) {
+	app.Use(helmet.New())
+	app.Use(recover.New())
+	app.Use(cors.New(middlewares.GetCORSConfig()))
 }
