@@ -29,13 +29,16 @@ const (
 	JwtSecret        = "JWT_SECRET"
 )
 
+const env = ".env"
+
+// LoadEnvVariables carga las variables de entorno y retorna un objeto de tipo Envs con los valores.
 func LoadEnvVariables() Envs {
-	err := godotenv.Load(".env")
-	if err != nil {
+
+	if err := godotenv.Load(env); err != nil {
 		log.Fatalf("failed to load environment variables: %v", err)
 	}
 
-	portStr := os.Getenv(Port)
+	portStr := getEnvValue(Port)
 	port, err := parsePort(portStr)
 
 	if err != nil {
@@ -44,14 +47,25 @@ func LoadEnvVariables() Envs {
 
 	return Envs{
 		Port:             port,
-		PostgresUser:     os.Getenv(PostgresUser),
-		PostgresPassword: os.Getenv(PostgresPassword),
-		PostgresDB:       os.Getenv(PostgresDB),
-		PostgresURL:      os.Getenv(PostgresURL),
-		JwtSecret:        os.Getenv(JwtSecret),
+		PostgresUser:     getEnvValue(PostgresUser),
+		PostgresPassword: getEnvValue(PostgresPassword),
+		PostgresDB:       getEnvValue(PostgresDB),
+		PostgresURL:      getEnvValue(PostgresURL),
+		JwtSecret:        getEnvValue(JwtSecret),
 	}
 }
 
+// getEnvValue recupera el valor de la variable de entorno especificada.
+// Registra un error y sale si la variable de entorno no está configurada.
+func getEnvValue(env string) string {
+	value, ok := os.LookupEnv(env)
+	if !ok {
+		log.Fatalf("environment variable %q not set", env)
+	}
+	return value
+}
+
+// parsePort parsea el puerto de la variable de entorno a un valor de tipo uint64.
 func parsePort(portStr string) (uint64, error) {
 
 	if portStr == "" {

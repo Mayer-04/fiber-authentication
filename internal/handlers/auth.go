@@ -17,7 +17,7 @@ func Register(c *fiber.Ctx) error {
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": "Error parsing request body to a struct",
+			"message": "Invalid JSON request data",
 		})
 	}
 
@@ -33,6 +33,7 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Failed to hash password"})
 	}
 
+	// Crear nuevo usuario a partir del modelo "User"
 	newUser := models.User{
 		Name:     data.Name,
 		Email:    data.Email,
@@ -58,7 +59,7 @@ func Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": "Error parsing request body to a struct",
+			"message": "Invalid JSON request data",
 		})
 	}
 
@@ -87,8 +88,8 @@ func Login(c *fiber.Ctx) error {
 		}
 		// Manejar otros errores de la base de datos
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
 			"message": "Database error",
-			"error":   err.Error(),
 		})
 	}
 

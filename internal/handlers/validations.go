@@ -12,8 +12,15 @@ var validate = validator.New()
 // ValidateRegisterData valida los datos del registro
 func validateRegisterData(data *models.Register) error {
 	if err := validate.Struct(data); err != nil {
-		return fmt.Errorf("validate register: %w", err)
+
+		for _, err := range err.(validator.ValidationErrors) {
+
+			message := fmt.Sprintf("the %s field is required", err.Field())
+			return fmt.Errorf("the field entered is incorrect: %s", message)
+
+		}
 	}
+
 	return nil
 }
 

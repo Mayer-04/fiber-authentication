@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Mayer-04/fiber-authentication/config"
 	"github.com/Mayer-04/fiber-authentication/internal/database"
 	"github.com/Mayer-04/fiber-authentication/internal/server"
+	"github.com/Mayer-04/fiber-authentication/pkg/config"
 )
 
 func main() {

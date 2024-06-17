@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Mayer-04/fiber-authentication/config"
 	"github.com/Mayer-04/fiber-authentication/internal/models"
+	"github.com/Mayer-04/fiber-authentication/pkg/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
